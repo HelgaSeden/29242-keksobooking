@@ -1,7 +1,7 @@
 # Личный проект «Кексобукинг» [![Build status][travis-image]][travis-url]
 
 * Студент: [Ольга](https://up.htmlacademy.ru/javascript/14/user/29242).
-* Наставник: `Неизвестно`.
+* Наставник: [Андрей Рыжаков](https://up.htmlacademy.ru/javascript/14/user/201015).
 
 ---
 
