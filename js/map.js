@@ -68,8 +68,8 @@ function shuffle(a) {
     a[i] = a[j];
     a[j] = x;
   }
-  return a
-};
+  return a;
+}
 
 var getAvatar = function (n) {
   return AVATAR_PATH.replace('{{XX}}', String(n).padStart(2, '0'));
