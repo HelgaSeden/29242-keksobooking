@@ -1,6 +1,6 @@
 'use strict';
 
-var AVATAR_PATH = 'img/avatars/user{{XX}}.png'
+var AVATAR_PATH = 'img/avatars/user{{XX}}.png';
 var ITEM_COUNT = 8;
 
 var PIN_WIDTH = 50;
@@ -56,17 +56,17 @@ var PHOTOS = [
   'http://o0.github.io/assets/images/tokyo/hotel1.jpg',
   'http://o0.github.io/assets/images/tokyo/hotel2.jpg',
   'http://o0.github.io/assets/images/tokyo/hotel3.jpg'
-]
+];
 
 function shuffle(a) {
-    var j, x, i;
-    for (i = a.length - 1; i > 0; i--) {
-        j = Math.floor(Math.random() * (i + 1));
-        x = a[i];
-        a[i] = a[j];
-        a[j] = x;
-    }
-    return a;
+  var j, x, i;
+  for (i = a.length - 1; i > 0; i--) {
+      j = Math.floor(Math.random() * (i + 1));
+      x = a[i];
+      a[i] = a[j];
+      a[j] = x;
+  }
+  return a;
 };
 
 var getAvatar = function (n) {
@@ -77,14 +77,14 @@ var randomNumber = function (min, max) {
   return Math.round(Math.random() * (max - min)) + min;
 };
 
-var getLocation = function() {
+var getLocation = function () {
   return {
-    'x' : randomNumber(300, 900),
-    'y' : randomNumber(130, 630)
+    'x': randomNumber(300, 900),
+    'y': randomNumber(130, 630)
   };
 };
 
-var getPrice = function() {
+var getPrice = function () {
   return randomNumber(1000, 1000000);
 };
 
@@ -92,23 +92,23 @@ var getRandomElement = function (arr) {
   return arr[randomNumber(0, arr.length - 1)];
 };
 
-var getType = function() {
+var getType = function () {
   return getRandomElement(TYPES);
 };
 
-var getRooms = function() {
+var getRooms = function () {
   return randomNumber(1, 5);
 };
 
-var getGuests = function() {
+var getGuests = function () {
   return randomNumber(1, 9);
 };
 
-var getCheckin = function() {
+var getCheckin = function () {
   return getRandomElement(CHECKINS);
 };
 
-var getCheckout = function() {
+var getCheckout = function () {
   return getRandomElement(CHECKOUTS);
 };
 
@@ -122,34 +122,34 @@ var getFeatures = function () {
   return features;
 };
 
-var getPhotos = function() {
+var getPhotos = function () {
   return shuffle(PHOTOS.slice());
 };
 
-var getAdsArray = function(amount) {
+var getAdsArray = function (amount) {
   var adsArray = [];
   var titles = shuffle(TITLES.slice());
-  for(var i = 0; i < amount; i++) {
+  for (var i = 0; i < amount; i++) {
     var ad = {
-      'author' : {
-        'avatar' : getAvatar(randomNumber(1, 8))
+      'author': {
+        'avatar': getAvatar(randomNumber(1, 8))
       },
-      'offer' : {
-        'title' : titles.pop(),
-        'address' : null,
-        'price' : getPrice(),
-        'type' : getType(),
-        'rooms' : getRooms(),
-        'guests' : getGuests(),
-        'checkin' : getCheckin(),
-        'checkout' : getCheckout(),
-        'features' : getFeatures(),
-        'description' : '',
-        'photos' : getPhotos()
+      'offer': {
+        'title': titles.pop(),
+        'address': null,
+        'price': getPrice(),
+        'type': getType(),
+        'rooms': getRooms(),
+        'guests': getGuests(),
+        'checkin': getCheckin(),
+        'checkout': getCheckout(),
+        'features': getFeatures(),
+        'description': '',
+        'photos': getPhotos()
       },
-      'location' : getLocation()
+      'location': getLocation()
     };
-    ad.offer.address = String(ad.location.x) + ', ' + String(ad.location.y)
+    ad.offer.address = String(ad.location.x) + ', ' + String(ad.location.y);
     adsArray = adsArray.concat(ad);
   }
   return adsArray;
