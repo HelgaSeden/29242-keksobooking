@@ -287,7 +287,7 @@ var onEscapePressPopup = function (evt) {
   }
 };
 
-function calculationPositionPin () {
+var calculationPositionPin = function () {
   var positionPin = {};
   var pinCoordinate = mapPinMain.getBoundingClientRect();
   var mapCoordinate = mapSection.getBoundingClientRect();
@@ -299,12 +299,12 @@ function calculationPositionPin () {
   return positionPin;
 };
 
-mapPinMain.addEventListener('click', function(evt) {
+mapPinMain.addEventListener('click', function () {
   mapDisabled(false);
   formDisabled(false);
     renderElement(
-      mapPins,
-      createMapPinList(adsArray, pinTemplate),
-      mapPinMain
+    mapPins,
+    createMapPinList(adsArray, pinTemplate),
+    mapPinMain
   );
-})
+});
