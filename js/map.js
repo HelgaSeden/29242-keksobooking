@@ -157,8 +157,6 @@ var getAdsArray = function (amount) {
   return adsArray;
 };
 
-document.querySelector('.map').classList.remove('map--faded');
-
 var adsArray = getAdsArray(ITEM_COUNT);
 
 var mapSection = document.querySelector('.map');
@@ -171,6 +169,21 @@ var adCardContainer = mapSection.querySelector('.map__filters-container');
 
 var adCardTemplate = document.querySelector('template').content.querySelector('.map__card');
 
+var onClickPin = function (evt) {
+  var targetPinElement = evt.target.closest('.map__pin');
+  if (targetPinElement && !targetPinElement.classList.contains('map__pin--main')) {
+    removePopup();
+    renderElement(
+        mapSection,
+        createCardOffer(adsArray[targetPinElement.tabIndex], adCardTemplate),
+        adCardContainer
+    );
+    var popupClosePin = document.querySelector('.popup__close');
+    popupClosePin.addEventListener('click', onClickPopupClose);
+    document.addEventListener('keydown', onEscapePressPopup);
+  }
+};
+
 function createMapPinList(data, template) {
   var MapPinsList = document.createDocumentFragment();
   var pin;
@@ -180,10 +193,14 @@ function createMapPinList(data, template) {
     pin.style.top = data[i].location.y - PIN_HEIGHT + 'px';
     pin.querySelector('img').src = data[i].author.avatar;
     pin.querySelector('img').alt = data[i].offer.title;
+    pin.addEventListener('click', onClickPin);
+    pin.tabIndex = i;
     MapPinsList.appendChild(pin);
   }
   return MapPinsList;
 }
+
+var CURRENT_CARD;
 
 function createCardOffer(data, template) {
   var сardOffer = template.cloneNode(true);
@@ -211,6 +228,7 @@ function createCardOffer(data, template) {
     photo.src = data.offer.photos[j];
     сardOffer.querySelector('.popup__photos').appendChild(photo);
   }
+  CURRENT_CARD = сardOffer;
   return сardOffer;
 }
 
@@ -218,14 +236,75 @@ function renderElement(parentContainer, element, beforeContainer) {
   parentContainer.insertBefore(element, beforeContainer);
 }
 
-renderElement(
-    mapPins,
-    createMapPinList(adsArray, pinTemplate),
-    mapPinMain
-);
+var mapDisabled = function (mapDisabled) {
+  mapSection.classList.toggle('map--faded', mapDisabled);
+};
 
-renderElement(
-    mapSection,
-    createCardOffer(adsArray[randomNumber(0, ITEM_COUNT - 1)], adCardTemplate),
-    adCardContainer
-);
+var adForm = document.querySelector('.ad-form');
+var fieldsetElement = document.querySelectorAll('fieldset');
+var ESC_KEYCODE = 27;
+
+var formDisabled = function (formDisabled) {
+  adForm.classList.toggle('ad-form--disabled', formDisabled);
+  for (var i = 0; i < fieldsetElement.length; i++) {
+    fieldsetElement[i].disabled = formDisabled;
+    for (var j = 0; j < fieldsetElement[i].children.length; j++) {
+      fieldsetElement[i].children[j].disabled = formDisabled;
+    }
+  }
+};
+
+mapDisabled(true);
+formDisabled(true);
+
+
+var onClickActivePage = function () {
+  mapDisabled(false);
+  formDisabled(false);
+  mapSection.addEventListener('click', onClickPin);
+  mapPinMain.removeEventListener('mouseup', onClickActivePage);
+};
+
+var removePopup = function () {
+  var popup = mapSection.querySelector('.popup');
+  if (popup) {
+    mapSection.removeChild(popup);
+  }
+};
+
+var closePopup = function () {
+  removePopup();
+  document.removeEventListener('keydown', onEscapePressPopup);
+};
+
+var onClickPopupClose = function () {
+  closePopup();
+};
+
+var onEscapePressPopup = function (evt) {
+  if (evt.keyCode === ESC_KEYCODE) {
+    closePopup();
+  }
+};
+
+function calculationPositionPin () {
+  var positionPin = {};
+  var pinCoordinate = mapPinMain.getBoundingClientRect();
+  var mapCoordinate = mapSection.getBoundingClientRect();
+  var MAIN_WIDTH_PIN = pinCoordinate.width;
+  var MAIN_HEIGHT_PIN = pinCoordinate.height;
+  positionPin.x = Math.round(pinCoordinate.x - mapCoordinate.x - MAIN_WIDTH_PIN / 2);
+  positionPin.y = Math.round(pinCoordinate.y - mapCoordinate.y - MAIN_HEIGHT_PIN);
+
+  return positionPin;
+};
+
+mapPinMain.addEventListener('click', function(evt) {
+  mapDisabled(false);
+  formDisabled(false);
+    renderElement(
+      mapPins,
+      createMapPinList(adsArray, pinTemplate),
+      mapPinMain
+  );
+})
