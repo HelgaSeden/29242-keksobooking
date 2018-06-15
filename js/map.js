@@ -284,6 +284,7 @@ var calculationPositionPin = function () {
   positionPin.x = Math.round(mapPinMain.offsetLeft + PIN_WIDTH / 2);
   positionPin.y = Math.round(mapPinMain.offsetTop + PIN_HEIGHT);
   addressForm.value = positionPin.x + ', ' + positionPin.y;
+  addressForm.readOnly = true;
 };
 
 var doActivationPage = function() {
