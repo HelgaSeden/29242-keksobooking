@@ -2,9 +2,9 @@
 
 var AVATAR_PATH = 'img/avatars/user{{XX}}.png';
 var ITEM_COUNT = 8;
-
 var PIN_WIDTH = 50;
 var PIN_HEIGHT = 70;
+var ESC_KEYCODE = 27;
 
 var mapSection = document.querySelector('.map');
 var mapPins = mapSection.querySelector('.map__pins');
@@ -15,7 +15,6 @@ var adCardTemplate = document.querySelector('template').content.querySelector('.
 var adForm = document.querySelector('.ad-form');
 var addressForm = adForm.address;
 var fieldsetElement = document.querySelectorAll('fieldset');
-var ESC_KEYCODE = 27;
 var currentCard = null;
 
 var adTitle = [
@@ -140,7 +139,7 @@ var getPhotos = function () {
 };
 
 var getAdsArray = function (amount) {
-  var adsArray = [];
+  var localAdsArray = [];
   var titles = shuffle(adTitle.slice());
   for (var i = 0; i < amount; i++) {
     var ad = {
@@ -163,9 +162,9 @@ var getAdsArray = function (amount) {
       'location': getLocation()
     };
     ad.offer.address = ad.location.x + ', ' + ad.location.y
-    adsArray = adsArray.concat(ad);
+    localAdsArray = localAdsArray.concat(ad);
   }
-  return adsArray;
+  return localAdsArray;
 };
 
 var adsArray = getAdsArray(ITEM_COUNT);
@@ -224,7 +223,8 @@ function createCardOffer(data, template) {
 }
 
 var onClosePopup = function(event) {
-  event.preventDefault();
+  if (event != null)
+    event.preventDefault();
   currentCard.remove();
   document.removeEventListener('keydown', onEscapePressPopup);
 }
@@ -247,12 +247,12 @@ mapDisabled(true);
 formDisabled(true);
 
 
-var onClickActivePage = function () {
-  mapDisabled(false);
-  formDisabled(false);
-  mapSection.addEventListener('click', onClickPin);
-  mapPinMain.removeEventListener('mouseup', onClickActivePage);
-};
+// var onClickActivePage = function () {
+//   mapDisabled(false);
+//   formDisabled(false);
+//   mapSection.addEventListener('click', onClickPin);
+//   mapPinMain.removeEventListener('mouseup', onClickActivePage);
+// };
 
 var removePopup = function () {
   var popup = mapSection.querySelector('.popup');
@@ -302,3 +302,143 @@ var onActivationPage = function(event) {
 mapPinMain.addEventListener('mouseup', onActivationPage);
 
 calculationPositionPin();
+
+var PRICE_BY_TYPE = {
+  'bungalo': 0,
+  'flat': 1000,
+  'house': 5000,
+  'palace': 100000
+};
+
+var typeSelect = adForm.querySelector('#type');
+var priceSelect = adForm.querySelector('#price');
+var checkInSelect = adForm.querySelector('#timein');
+var checkOutSelect = adForm.querySelector('#timeout');
+var roomsSelect = adForm.querySelector('#room_number');
+var capacitySelect = adForm.querySelector('#capacity');
+var selectedRooms = Number(roomsSelect.value);
+var resetButton = adForm.querySelector('.ad-form__reset');
+
+
+var getMinPriceByType = function (type) {
+  return PRICE_BY_TYPE[type];
+};
+
+var onChangeTypeSelect = function () {
+  var minPrice = getMinPriceByType(typeSelect.value);
+  priceSelect.setAttribute('min', minPrice);
+  priceSelect.setAttribute('placeholder', minPrice);
+};
+
+var changeCheckTime = function (checkField, index) {
+  checkField.selectedIndex = index;
+};
+
+var onChangeCheckInSelect = function () {
+  changeCheckTime(checkOutSelect, checkInSelect.selectedIndex);
+};
+
+var onChangeCheckOutSelect = function () {
+  changeCheckTime(checkInSelect, checkOutSelect.selectedIndex);
+};
+
+var testCapacity = function () {
+  var selectedCapacity = Number(capacitySelect.value);
+  var message = '';
+  switch (selectedRooms) {
+    case (1):
+      if (selectedCapacity !== 1) {
+        message = 'Для такого количества комнат можно выбрать место для 1 гостя';
+      }
+      break;
+    case (2):
+      if (selectedCapacity !== 1 && selectedCapacity !== 2) {
+        message = 'Для такого количества комнат можно выбрать места для 1 гостя или 2 гостей';
+      }
+      break;
+    case (3):
+      if (selectedCapacity !== 1 && selectedCapacity !== 2 && selectedCapacity !== 3) {
+        message = 'Для такого количества комнат можно выбрать места для 1 гостя, 2-х или 3 гостей';
+      }
+      break;
+    case (100):
+      if (selectedCapacity !== 100) {
+        message = 'Для такого количества комнат места не для гостей';
+      }
+      break;
+  };
+
+  capacitySelect.setCustomValidity(message);
+};
+
+var onChangeCapacitySelect = function () {
+  testCapacity();
+};
+
+var clearMap = function () {
+  for (var i = 0; i < mapPins.children.length; i++) {
+    if (mapPins.children[i].type == 'button' && mapPins.children[i] != mapPinMain)
+    {
+      mapPins.children[i].remove();
+      i--;
+    }
+  }
+};
+
+var clearForm = function () {
+  var inputs = adForm.querySelectorAll('input');
+  for (var i = 0; i < inputs.length; i++) {
+    if (inputs[i].type == 'checkbox')
+      inputs[i].checked = false;
+    else
+      inputs[i].value = "";
+  };
+
+  var selects = adForm.querySelectorAll('select');
+  for (var i = 0; i < selects.length; i++) {
+    switch(selects[i].id) {
+      case 'type':
+        selects[i].value = 'flat';
+        break;
+      case 'timein':
+        selects[i].selectedIndex = 0;
+        break;
+      case 'timeout':
+        selects[i].selectedIndex = 0;
+        break;
+      case 'room_number':
+        selects[i].selectedIndex = 0;
+        break;
+      case 'capacity':
+        selects[i].selectedIndex = 2;
+        break;
+    }
+  };
+
+  var textAreas = adForm.querySelectorAll('textarea');
+  for (var i = 0; i < textAreas.length; i++) {
+    textAreas[i].value = "";
+  }
+};
+
+var onClickReset = function (event) {
+  event.preventDefault();
+  mapDisabled(true);
+  formDisabled(true);
+  clearMap();
+  clearForm();
+  calculationPositionPin();
+  onClosePopup();
+  mapPinMain.addEventListener('mouseup', onActivationPage);
+};
+
+testCapacity();
+typeSelect.addEventListener('change', onChangeTypeSelect);
+checkInSelect.addEventListener('change', onChangeCheckInSelect);
+checkOutSelect.addEventListener('change', onChangeCheckOutSelect);
+capacitySelect.addEventListener('change', onChangeCapacitySelect);
+roomsSelect.addEventListener('change', function (event) {
+  selectedRooms = Number(roomsSelect.value);
+  testCapacity();
+});
+resetButton.addEventListener('click', onClickReset);
