@@ -11,30 +11,35 @@
   var roomsSelect = adForm.querySelector('#room_number');
   var capacitySelect = adForm.querySelector('#capacity');
   var selectedRooms = Number(roomsSelect.value);
-  var resetButton = adForm.querySelector('.ad-form__reset');
 
-  var formDisabled = function (formDisabled) {
-    adForm.classList.toggle('ad-form--disabled', formDisabled);
+  roomsSelect.addEventListener('change', function () {
+    selectedRooms = Number(roomsSelect.value);
+    window.form.test();
+  });
+
+  var formDisabled = function (isDisabled) {
+    adForm.classList.toggle('ad-form--disabled', isDisabled);
     for (var i = 0; i < fieldsetElement.length; i++) {
-      fieldsetElement[i].disabled = formDisabled;
+      fieldsetElement[i].disabled = isDisabled;
       for (var j = 0; j < fieldsetElement[i].children.length; j++) {
-        fieldsetElement[i].children[j].disabled = formDisabled;
+        fieldsetElement[i].children[j].disabled = isDisabled;
       }
     }
-  }
+  };
 
   var clearForm = function () {
     var inputs = adForm.querySelectorAll('input');
     for (var i = 0; i < inputs.length; i++) {
-      if (inputs[i].type == 'checkbox')
+      if (inputs[i].type === 'checkbox') {
         inputs[i].checked = false;
-      else
-        inputs[i].value = "";
-    };
+      } else {
+        inputs[i].value = '';
+      }
+    }
 
     var selects = adForm.querySelectorAll('select');
-    for (var i = 0; i < selects.length; i++) {
-      switch(selects[i].id) {
+    for (i = 0; i < selects.length; i++) {
+      switch (selects[i].id) {
         case 'type':
           selects[i].value = 'flat';
           break;
@@ -51,11 +56,11 @@
           selects[i].selectedIndex = 2;
           break;
       }
-    };
+    }
 
     var textAreas = adForm.querySelectorAll('textarea');
-    for (var i = 0; i < textAreas.length; i++) {
-      textAreas[i].value = "";
+    for (i = 0; i < textAreas.length; i++) {
+      textAreas[i].value = '';
     }
   };
 
@@ -101,7 +106,7 @@
           message = 'Для такого количества комнат места не для гостей';
         }
         break;
-    };
+    }
 
     capacitySelect.setCustomValidity(message);
   };
@@ -121,5 +126,5 @@
     changeCheckIn: onChangeCheckInSelect,
     changeCheckOut: onChangeCheckOutSelect,
     changeCapacity: onChangeCapacitySelect
-  }
+  };
 })();

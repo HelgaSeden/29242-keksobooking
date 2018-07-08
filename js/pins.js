@@ -5,7 +5,6 @@
   var PIN_WIDTH = 50;
   var PIN_HEIGHT = 70;
 
-  var pinTemplate = document.querySelector('template').content.querySelector('.map__pin');
   var mapPinMain = document.querySelector('.map__pin--main');
   var adForm = document.querySelector('.ad-form');
   var addressForm = adForm.address;
@@ -23,6 +22,6 @@
 
   window.pins = {
     position: calculationPositionPin,
-  }
+  };
 
 })();

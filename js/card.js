@@ -4,7 +4,7 @@
   var ESC_KEYCODE = 27;
 
   var createCardOffer = function (data, template) {
-  var сardOffer = template.cloneNode(true);
+    var сardOffer = template.cloneNode(true);
     сardOffer.querySelector('.popup__title').textContent = data.offer.title;
     сardOffer.querySelector('.popup__text--address').textContent = data.offer.address;
     сardOffer.querySelector('.popup__text--price').textContent = data.offer.price + ' ₽/ночь';
@@ -31,11 +31,11 @@
     }
     сardOffer.querySelector('.popup__close').addEventListener('click', window.main.closePopup);
     return сardOffer;
-  }
+  };
 
   var onEscapePressPopup = function (evt) {
     if (evt.keyCode === ESC_KEYCODE) {
-      if(window.currentCard) {
+      if (window.currentCard) {
         window.currentCard.remove();
         document.removeEventListener('keydown', onEscapePressPopup);
       }
@@ -45,5 +45,5 @@
   window.card = {
     create: createCardOffer,
     escape: onEscapePressPopup
-  }
+  };
 })();

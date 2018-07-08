@@ -2,7 +2,6 @@
 
 (function () {
 
-  var AVATAR_PATH = 'img/avatars/user{{XX}}.png';
   var ITEM_COUNT = 8;
 
   var adTitle = [
@@ -74,10 +73,6 @@
       a[randomIndex] = tempElement;
     }
     return a;
-  };
-
-  var getAvatar = function (n) {
-    return AVATAR_PATH.replace('{{XX}}', String(n).padStart(2, '0'));
   };
 
   var randomNumber = function (min, max) {
@@ -156,7 +151,7 @@
         },
         'location': getLocation()
       };
-      ad.offer.address = ad.location.x + ', ' + ad.location.y
+      ad.offer.address = ad.location.x + ', ' + ad.location.y;
       localAdsArray = localAdsArray.concat(ad);
     }
     return localAdsArray;
@@ -172,5 +167,5 @@
     ads: adsArray,
     offerTypeRus: offerTypeRus,
     minPrice: getMinPriceByType
-  }
+  };
 })();
