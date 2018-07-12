@@ -1,6 +1,7 @@
 'use strict';
 
 (function () {
+
   var modalPopup = document.createElement('div');
   var alertPopup = document.createElement('div');
   var createModal = function (text) {

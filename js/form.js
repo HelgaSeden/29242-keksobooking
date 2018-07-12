@@ -11,6 +11,7 @@
   var roomsSelect = adForm.querySelector('#room_number');
   var capacitySelect = adForm.querySelector('#capacity');
   var selectedRooms = Number(roomsSelect.value);
+  var successMessage = document.querySelector('.success');
 
   roomsSelect.addEventListener('change', function () {
     selectedRooms = Number(roomsSelect.value);
@@ -115,8 +116,28 @@
     testCapacity();
   };
 
-  window.map.clearMap();
+  var getFormData = function () {
+    return new FormData(adForm);
+  };
 
+  var onClickSuccess = function () {
+    successMessage.classList.add('hidden');
+    successMessage.removeEventListener('click', onClickSuccess);
+  };
+
+  adForm.addEventListener('submit', function (event) {
+    event.preventDefault();
+    window.backend.send(getFormData(), function () {
+      clearForm();
+      successMessage.classList.remove('hidden');
+      successMessage.addEventListener('click', onClickSuccess);
+    },
+    function (data) {
+      window.modal.show(data);
+    });
+  });
+
+  window.map.clearMap();
 
   window.form = {
     disabledForm: formDisabled,

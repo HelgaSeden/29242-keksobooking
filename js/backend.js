@@ -1,4 +1,5 @@
 'use strict';
+
 (function () {
 
   var loadData = function (onDataLoadSuccess, onDataLoadError) {

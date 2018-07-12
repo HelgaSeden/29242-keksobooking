@@ -69,7 +69,16 @@
   capacitySelect.addEventListener('change', window.form.changeCapacity);
   resetButton.addEventListener('click', onClickReset);
 
-  mapPinMain.addEventListener('click', onActivationPage);
+  var onLoadSuccess = function (data) {
+    window.data.ads = data;
+    mapPinMain.addEventListener('click', onActivationPage);
+  };
+
+  var onLoadError = function (error) {
+    window.modal.show(error);
+  };
+
+  window.backend.load(onLoadSuccess, onLoadError);
 
   var onMouseMove = function (event) {
     event.preventDefault();

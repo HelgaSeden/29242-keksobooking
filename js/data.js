@@ -2,8 +2,6 @@
 
 (function () {
 
-  var ITEM_COUNT = 8;
-
   var adTitle = [
     'Большая уютная квартира',
     'Маленькая неуютная квартира',
@@ -157,15 +155,13 @@
     return localAdsArray;
   };
 
-  var adsArray = getAdsArray(ITEM_COUNT);
-
   var getMinPriceByType = function (type) {
     return PRICE_BY_TYPE[type];
   };
 
   window.data = {
-    ads: adsArray,
     offerTypeRus: offerTypeRus,
-    minPrice: getMinPriceByType
+    minPrice: getMinPriceByType,
+    getAdsArray: getAdsArray
   };
 })();
