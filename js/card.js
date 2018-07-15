@@ -1,7 +1,9 @@
 'use strict';
 
 (function () {
+
   var ESC_KEYCODE = 27;
+  var currentCard = null;
 
   var createCardOffer = function (data, template) {
     var сardOffer = template.cloneNode(true);
@@ -29,21 +31,29 @@
       photo.src = data.offer.photos[j];
       сardOffer.querySelector('.popup__photos').appendChild(photo);
     }
-    сardOffer.querySelector('.popup__close').addEventListener('click', window.main.closePopup);
+    currentCard = сardOffer;
+    сardOffer.querySelector('.popup__close').addEventListener('click', onClosePopup);
+    document.addEventListener('keydown', onEscapePress);
     return сardOffer;
   };
+  var closePopup = function () {
+    if (currentCard) {
+      currentCard.remove();
+      document.removeEventListener('keydown', onEscapePress);
+    }
+  };
+  var onClosePopup = function () {
+    closePopup();
+  };
 
-  var onEscapePressPopup = function (evt) {
+  var onEscapePress = function (evt) {
     if (evt.keyCode === ESC_KEYCODE) {
-      if (window.currentCard) {
-        window.currentCard.remove();
-        document.removeEventListener('keydown', onEscapePressPopup);
-      }
+      closePopup();
     }
   };
 
   window.card = {
     create: createCardOffer,
-    escape: onEscapePressPopup
+    close: closePopup
   };
 })();

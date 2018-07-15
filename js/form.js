@@ -137,11 +137,11 @@
     });
   });
 
-  window.map.clearMap();
+  window.map.clear();
 
   window.form = {
-    disabledForm: formDisabled,
-    clearForm: clearForm,
+    disabled: formDisabled,
+    clear: clearForm,
     changeType: onChangeTypeSelect,
     test: testCapacity,
     changeCheckIn: onChangeCheckInSelect,

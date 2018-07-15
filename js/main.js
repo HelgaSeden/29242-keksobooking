@@ -15,29 +15,25 @@
   var checkInSelect = adForm.querySelector('#timein');
   var checkOutSelect = adForm.querySelector('#timeout');
   var capacitySelect = adForm.querySelector('#capacity');
-  var resetButton = adForm.querySelector('.ad-form__reset');
   var mapPins = mapSection.querySelector('.map__pins');
   var mapPinMain = document.querySelector('.map__pin--main');
   var pinTemplate = document.querySelector('template').content.querySelector('.map__pin');
   var addressForm = adForm.address;
 
-  window.map.disabledMap(true);
-  window.form.disabledForm(true);
+  window.map.disabled(true);
+  window.form.disabled(true);
 
-  var onClosePopup = function (event) {
-    if (typeof event !== 'undefined') {
-      event.preventDefault();
-    }
-    if (window.currentCard !== null) {
-      window.currentCard.remove();
-    }
-    document.removeEventListener('keydown', window.card.escape);
+  var showPins = function (data) {
+    window.map.clear();
+    mapPins.insertBefore(window.map.adPins(data, pinTemplate), mapPinMain);
   };
 
   var doActivationPage = function () {
-    window.map.disabledMap(false);
-    window.form.disabledForm(false);
-    mapPins.insertBefore(window.map.create(window.data.ads, pinTemplate), mapPinMain);
+    window.map.disabled(false);
+    window.form.disabled(false);
+    window.filter.set(window.debounce(showPins));
+    var filteredData = window.filter.get();
+    showPins(filteredData);
   };
 
   var onActivationPage = function (event) {
@@ -47,14 +43,14 @@
     }
   };
 
-  var onClickReset = function (event) {
+  var onResetForm = function (event) {
     event.preventDefault();
-    window.map.disabledMap(true);
-    window.form.disabledForm(true);
-    window.map.clearMap();
-    window.form.clearForm();
+    window.map.disabled(true);
+    window.form.disabled(true);
+    window.map.clear();
+    window.form.clear();
     window.pins.position();
-    onClosePopup();
+    window.card.close();
 
     mapPinMain.style.left = PIN_MAIN_COORDS.X + 'px';
     mapPinMain.style.top = PIN_MAIN_COORDS.Y + 'px';
@@ -67,7 +63,7 @@
   checkInSelect.addEventListener('change', window.form.changeCheckIn);
   checkOutSelect.addEventListener('change', window.form.changeCheckOut);
   capacitySelect.addEventListener('change', window.form.changeCapacity);
-  resetButton.addEventListener('click', onClickReset);
+  adForm.addEventListener('reset', onResetForm);
 
   var onLoadSuccess = function (data) {
     window.data.ads = data;
@@ -149,9 +145,4 @@
 
   mapPinMain.addEventListener('mousedown', onMouseDown);
   document.addEventListener('mouseup', onMouseUp);
-
-
-  window.main = {
-    closePopup: onClosePopup
-  };
 })();
